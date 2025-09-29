@@ -123,6 +123,32 @@
             color: white;
             box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
         }
+		
+		.mood-count-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    font-size: 1.3em;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #333;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.mood-count-btn:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.mood-count-btn.selected {
+    background: #4a90e2;
+    color: white;
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.4);
+}		
 
         .button-group {
             display: flex;
@@ -174,14 +200,39 @@
             top: 0;
             left: 0;
         }
+		
+.color-bar {
+    flex: 1;
+    position: relative;
+    cursor: pointer;
+}
 
-        .color-bar {
-            flex: 1;
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.3s;
-            transform-style: preserve-3d;
-        }
+.color-face, .shade-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s;
+}
+
+.shade-face {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.color-bar.flipped .color-face {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.color-bar.flipped .shade-face {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 
         .color-bar.flipped .color-face {
             transform: rotateY(180deg);
@@ -191,17 +242,18 @@
             transform: rotateY(0deg);
         }
 
-        .color-face, .shade-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            transition: transform 0.6s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+.color-face, .shade-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    transition: transform 0.6s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;  /* Alignement en bas */
+    padding-bottom: 40px;        /* Espace depuis le bas */
+}
 
         .shade-face {
             transform: rotateY(180deg);
@@ -215,6 +267,7 @@
             transition: opacity 0.3s;
             pointer-events: none;
             margin-top: 10px;
+			margin-bottom: 0;
         }
 
         .color-name {
@@ -514,98 +567,134 @@
         </div>
     </div>
 
-    <!-- Écran 3: Mood/Style -->
-    <div class="screen" id="screen3">
-        <h1>Choisissez l'ambiance</h1>
-        <div class="option-grid">
-            <div class="option-card" data-mood="vibrant">Vibrant<br><small style="color: #666;">Couleurs saturées</small></div>
-            <div class="option-card" data-mood="doux">Doux<br><small style="color: #666;">Tons apaisants</small></div>
-            <div class="option-card" data-mood="terreux">Terreux<br><small style="color: #666;">Tons naturels</small></div>
-            <div class="option-card" data-mood="profond">Profond<br><small style="color: #666;">Tons sombres</small></div>
-            <div class="option-card" data-mood="lumineux">Lumineux<br><small style="color: #666;">Tons clairs</small></div>
-            <div class="option-card" data-mood="neutre">Neutre<br><small style="color: #666;">Équilibré</small></div>
-        </div>
-        <div class="button-group">
-            <button class="prev-btn" id="toScreen2">Précédent</button>
-            <button class="next-btn" id="generatePalette" disabled>Générer la palette</button>
-        </div>
+<!-- Écran 3: Mood/Style -->
+<div class="screen" id="screen3">
+    <h1>Choisissez l'ambiance</h1>
+    
+    <div class="label-section">
+        <h2 style="font-size: 1.5em; margin-bottom: 20px;">Nombre d'ambiances</h2>
     </div>
+    <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 30px;">
+<button class="mood-count-btn selected" id="moodCount1" data-mood-count="1">1</button>
+<button class="mood-count-btn" id="moodCount2" data-mood-count="2">2</button>
+    </div>
+
+    <div class="label-section">
+        <h2 style="font-size: 1.5em; margin-bottom: 20px;">
+            <span id="moodInstruction">Choisissez une ambiance</span>
+        </h2>
+    </div>
+    
+    <div class="option-grid">
+        <div class="option-card" data-mood="neon">Néon<br><small style="color: #666;">Couleurs fluorescentes</small></div>
+        <div class="option-card" data-mood="vibrant">Vibrant<br><small style="color: #666;">Couleurs saturées</small></div>
+        <div class="option-card" data-mood="profond">Profond<br><small style="color: #666;">Tons sombres</small></div>
+        <div class="option-card" data-mood="lumineux">Lumineux<br><small style="color: #666;">Tons clairs</small></div>
+        <div class="option-card" data-mood="neutre">Neutre<br><small style="color: #666;">Équilibré</small></div>
+        <div class="option-card" data-mood="terreux">Terreux<br><small style="color: #666;">Tons naturels</small></div>
+        <div class="option-card" data-mood="vintage">Vintage<br><small style="color: #666;">Tons rétro années 70</small></div>
+        <div class="option-card" data-mood="pastel">Pastel<br><small style="color: #666;">Tons doux désaturés</small></div>
+    </div>
+    
+    <div class="button-group">
+        <button class="prev-btn" id="toScreen2">Précédent</button>
+        <button class="next-btn" id="generatePalette" disabled>Générer la palette</button>
+    </div>
+</div>
 
     <!-- Affichage de la palette -->
     <div class="screen" id="paletteScreen">
         <button class="menu-btn" id="menuBtn">☰</button>
 
         <div class="shade-slider" id="shadeSlider">
-            <span>Plus sombre</span>
-            <input type="range" id="shadeRange" min="-50" max="50" value="0">
-            <span>Plus clair</span>
-        </div>
+    <span>Plus sombre</span>
+    <input type="range" id="shadeRange" min="-50" max="50" value="0">
+    <span>Plus clair</span>
+</div>
 
-        <div class="quick-panel" id="quickPanel">
-            <div class="quick-section">
-                <label>Couleur de base</label>
-                <select id="baseColorSelect">
-                    <option value="rouge">Rouge</option>
-                    <option value="bleu">Bleu</option>
-                    <option value="vert">Vert</option>
-                    <option value="jaune">Jaune</option>
-                    <option value="orange">Orange</option>
-                    <option value="rose">Rose</option>
-                    <option value="violet">Violet</option>
-                    <option value="marron">Marron</option>
-                    <option value="beige">Beige</option>
-                    <option value="gris">Gris</option>
-                    <option value="noir">Noir</option>
-                    <option value="blanc">Blanc</option>
-                    <option value="aléatoire">Aléatoire</option>
-                    <option value="moderne">Moderne</option>
-                </select>
-            </div>
-            <div class="quick-section">
-                <label>Nombre de couleurs</label>
-                <select id="colorCountSelect">
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                    <option value="4">4</option>
-                    <option value="5">5</option>
-                    <option value="6">6</option>
-                    <option value="7">7</option>
-                    <option value="8">8</option>
-                    <option value="9">9</option>
-                    <option value="10">10</option>
-                    <option value="11">11</option>
-                    <option value="12">12</option>
-                </select>
-            </div>
-            <div class="quick-section">
-                <label>Type de palette</label>
-                <select id="paletteTypeSelect">
-                    <option value="monochromatique">Monochromatique</option>
-                    <option value="analogues">Analogue</option>
-                    <option value="complémentaire">Complémentaire</option>
-                    <option value="triade">Triade</option>
-                    <option value="tétrade">Tétrade</option>
-                    <option value="pentade">Pentade</option>
-                    <option value="hexade">Hexade</option>
-                    <option value="unique">Unique</option>
-                </select>
-            </div>
-            <div class="quick-section">
-                <label>Ambiance</label>
-                <select id="moodSelect">
-                    <option value="vibrant">Vibrant</option>
-                    <option value="doux">Doux</option>
-                    <option value="terreux">Terreux</option>
-                    <option value="profond">Profond</option>
-                    <option value="lumineux">Lumineux</option>
-                    <option value="neutre">Neutre</option>
-                </select>
-            </div>
-            <div class="quick-buttons">
-                <button class="quick-btn validate" id="applyQuick">Valider</button>
-                <button class="quick-btn home" id="homeBtn">Accueil</button>
-            </div>
-        </div>
+<div class="quick-panel" id="quickPanel">
+    <div class="quick-section">
+        <label>Couleur de base</label>
+        <select id="baseColorSelect">
+            <option value="rouge">Rouge</option>
+            <option value="bleu">Bleu</option>
+            <option value="vert">Vert</option>
+            <option value="jaune">Jaune</option>
+            <option value="orange">Orange</option>
+            <option value="rose">Rose</option>
+            <option value="violet">Violet</option>
+            <option value="marron">Marron</option>
+            <option value="beige">Beige</option>
+            <option value="gris">Gris</option>
+            <option value="noir">Noir</option>
+            <option value="blanc">Blanc</option>
+            <option value="aléatoire">Aléatoire</option>
+            <option value="moderne">Moderne</option>
+            <option value="personnalisée">🎨 Personnalisée</option>
+        </select>
+        <input type="color" id="customColorPicker" style="width: 100%; height: 50px; margin-top: 10px; border-radius: 8px; border: 2px solid #e0e0e0; cursor: pointer; display: none;">
+    </div>
+    <div class="quick-section">
+        <label>Nombre de couleurs</label>
+        <select id="colorCountSelect">
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+        </select>
+    </div>
+    <div class="quick-section">
+        <label>Type de palette</label>
+        <select id="paletteTypeSelect">
+            <option value="monochromatique">Monochromatique</option>
+            <option value="analogues">Analogue</option>
+            <option value="complémentaire">Complémentaire</option>
+            <option value="triade">Triade</option>
+            <option value="tétrade">Tétrade</option>
+            <option value="pentade">Pentade</option>
+            <option value="hexade">Hexade</option>
+            <option value="unique">Unique</option>
+        </select>
+    </div>
+<div class="quick-section">
+    <label>Ambiance principale</label>
+    <select id="moodSelect">
+        <option value="neon">Néon</option>
+        <option value="vibrant">Vibrant</option>
+        <option value="profond">Profond</option>
+        <option value="lumineux">Lumineux</option>
+        <option value="neutre">Neutre</option>
+        <option value="terreux">Terreux</option>
+        <option value="vintage">Vintage</option>
+        <option value="pastel">Pastel</option>
+    </select>
+</div>
+<div class="quick-section">
+    <label>Ambiance secondaire (optionnel)</label>
+    <select id="moodSelect2">
+        <option value="">Aucune</option>
+        <option value="neon">Néon</option>
+        <option value="vibrant">Vibrant</option>
+        <option value="profond">Profond</option>
+        <option value="lumineux">Lumineux</option>
+        <option value="neutre">Neutre</option>
+        <option value="terreux">Terreux</option>
+        <option value="vintage">Vintage</option>
+        <option value="pastel">Pastel</option>
+    </select>
+</div>
+    <div class="quick-buttons">
+        <button class="quick-btn validate" id="applyQuick">Valider</button>
+        <button class="quick-btn home" id="homeBtn">Accueil</button>
+    </div>
+</div>
 
         <div class="palette-display" id="paletteContainer"></div>
     </div>
@@ -623,13 +712,15 @@
     </div>
 
     <script>
-        let config = {
-            baseColor: '',
-            colorCount: 5,
-            paletteType: '',
-            mood: '',
-            customColor: null
-        };
+let config = {
+    baseColor: '',
+    colorCount: 5,
+    paletteType: '',
+    mood: '',
+    mood2: '', // Nouveau
+    moodCount: 1, // Nouveau
+    customColor: null
+};
 
         let isFlipped = false;
         let currentColors = [];
@@ -747,20 +838,79 @@
             showScreen('screen3');
         });
 
-        // Écran 3
-        document.querySelectorAll('#screen3 .option-card').forEach(card => {
-            card.addEventListener('click', () => {
-                document.querySelectorAll('#screen3 .option-card').forEach(c => c.classList.remove('selected'));
-                card.classList.add('selected');
-                config.mood = card.dataset.mood;
-                document.getElementById('generatePalette').disabled = false;
-            });
-        });
+// Gestion du nombre de moods
+let selectedMoodCount = 1;
+let selectedMoods = [];		
+		
 
-        document.getElementById('generatePalette').addEventListener('click', () => {
-            generatePalette();
-            showScreen('paletteScreen');
-        });
+// Écran 3 - Gestion des moods
+document.querySelectorAll('#screen3 .option-card').forEach(card => {
+    card.addEventListener('click', () => {
+        const mood = card.dataset.mood;
+        
+        if (selectedMoodCount === 1) {
+            // Mode 1 mood : sélection unique
+            document.querySelectorAll('#screen3 .option-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            selectedMoods = [mood];
+            config.mood = mood;
+            config.mood2 = '';
+            document.getElementById('generatePalette').disabled = false;
+        } else {
+            // Mode 2 moods : sélection multiple
+            if (card.classList.contains('selected')) {
+                // Désélectionner
+                card.classList.remove('selected');
+                selectedMoods = selectedMoods.filter(m => m !== mood);
+            } else {
+                // Sélectionner (max 2)
+                if (selectedMoods.length < 2) {
+                    card.classList.add('selected');
+                    selectedMoods.push(mood);
+                } else {
+                    // Remplacer le plus ancien
+                    const oldestMood = selectedMoods.shift();
+                    document.querySelector(`[data-mood="${oldestMood}"]`).classList.remove('selected');
+                    card.classList.add('selected');
+                    selectedMoods.push(mood);
+                }
+            }
+            
+            config.mood = selectedMoods[0] || '';
+            config.mood2 = selectedMoods[1] || '';
+            document.getElementById('generatePalette').disabled = selectedMoods.length === 0;
+        }
+    });
+});
+
+
+
+document.querySelectorAll('[data-mood-count]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        // Enlever selected uniquement des boutons de mood count
+        document.querySelectorAll('[data-mood-count]').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        selectedMoodCount = parseInt(btn.dataset.moodCount);
+        config.moodCount = selectedMoodCount;
+        
+        // Mettre à jour l'instruction
+        const instruction = document.getElementById('moodInstruction');
+        instruction.textContent = selectedMoodCount === 1 ? 
+            'Choisissez une ambiance' : 
+            'Choisissez deux ambiances';
+        
+        // Réinitialiser les sélections
+        selectedMoods = [];
+        document.querySelectorAll('#screen3 .option-card').forEach(c => c.classList.remove('selected'));
+        document.getElementById('generatePalette').disabled = true;
+    });
+});
+
+document.getElementById('generatePalette').addEventListener('click', () => {
+    generatePalette();
+    showScreen('paletteScreen');
+});
+		
 
         function showScreen(screenId) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -831,31 +981,31 @@
             updateQuickPanel();
         }
 
-        function toggleAllShades() {
-            const bars = document.querySelectorAll('.color-bar');
-            isFlipped = !isFlipped;
-            
-            if (isFlipped) {
-                // Générer des nuances aléatoires
-                const shadeValue = Math.floor(Math.random() * 101) - 50; // -50 à +50
-                document.getElementById('shadeRange').value = shadeValue;
-                
-                bars.forEach((bar, i) => {
-                    bar.classList.add('flipped');
-                    updateSingleShade(bar, i, shadeValue);
-                });
-                
-                document.getElementById('shadeSlider').classList.add('active');
-            } else {
-                // Retour aux couleurs originales
-                bars.forEach(bar => {
-                    bar.classList.remove('flipped');
-                });
-                
-                document.getElementById('shadeSlider').classList.remove('active');
-                document.getElementById('shadeRange').value = 0;
-            }
-        }
+function toggleAllShades() {
+    const bars = document.querySelectorAll('.color-bar');
+    isFlipped = !isFlipped;
+    
+    if (isFlipped) {
+        // Générer une nuance aléatoire limitée à ±25%
+        const shadeValue = Math.floor(Math.random() * 51) - 25; // -25 à +25
+        document.getElementById('shadeRange').value = shadeValue;
+        
+        bars.forEach((bar, i) => {
+            bar.classList.add('flipped');
+            updateSingleShade(bar, i, shadeValue);
+        });
+        
+        document.getElementById('shadeSlider').classList.add('active');
+    } else {
+        // Retour aux couleurs originales
+        bars.forEach(bar => {
+            bar.classList.remove('flipped');
+        });
+        
+        document.getElementById('shadeSlider').classList.remove('active');
+        document.getElementById('shadeRange').value = 0;
+    }
+}
 
         function updateSingleShade(bar, index, shadeValue) {
             const color = currentColors[index];
@@ -877,91 +1027,143 @@ function generateColors() {
     const base = config.customColor || baseColors[config.baseColor];
     const colors = [];
     const count = config.colorCount;
-
-    // Vérifier si c'est une couleur achromatique (noir, gris, blanc)
     const isAchromatic = base.s < 10;
 
+    // Variations BEAUCOUP plus marquées
+    const variation = Math.random() * 80 - 40; // ±40° au lieu de ±15°
+    
     switch(config.paletteType) {
         case 'monochromatique':
+            // Garder la même teinte mais varier ÉNORMÉMENT luminosité et saturation
             for(let i = 0; i < count; i++) {
-                const lightness = 20 + (i * (70 / (count - 1)));
-                colors.push(createColor(base.h, isAchromatic ? 0 : base.s, lightness));
+                const hue = (base.h + Math.random() * 15 - 7.5) % 360;
+                const sat = isAchromatic ? 0 : Math.random() * 60 + 20; // 20-80%
+                const lightness = 15 + (i * (70 / (count - 1))) + (Math.random() * 15 - 7.5);
+                colors.push(createColor(hue, sat, lightness));
             }
             break;
 
         case 'analogues':
-            for(let i = 0; i < count; i++) {
-                if (isAchromatic) {
-                    const lightness = 20 + (i * (70 / (count - 1)));
+            if (isAchromatic) {
+                for(let i = 0; i < count; i++) {
+                    const lightness = 15 + Math.random() * 75;
                     colors.push(createColor(0, 0, lightness));
-                } else {
-                    const hue = (base.h + (i * 30) - 30) % 360;
-                    colors.push(createColor(hue, base.s, base.l));
+                }
+            } else {
+                // Espacement très variable entre 10° et 70°
+                const baseSpread = 15 + Math.random() * 55; // 15-70°
+                const offset = (count - 1) * baseSpread / 2;
+                
+                for(let i = 0; i < count; i++) {
+                    const hue = (base.h + (i * baseSpread) - offset + variation) % 360;
+                    // Mix de saturations hautes et basses
+                    const sat = Math.random() > 0.5 ? 
+                        Math.random() * 30 + 60 : // Saturé (60-90%)
+                        Math.random() * 30 + 20;  // Désaturé (20-50%)
+                    // Mix de luminosités
+                    const light = Math.random() > 0.5 ?
+                        Math.random() * 25 + 60 : // Clair (60-85%)
+                        Math.random() * 25 + 25;  // Foncé (25-50%)
+                    colors.push(createColor(hue, sat, light));
                 }
             }
             break;
 
         case 'complémentaire':
-            for(let i = 0; i < count; i++) {
-                if (isAchromatic) {
-                    const lightness = 20 + (i * (70 / (count - 1)));
+            if (isAchromatic) {
+                for(let i = 0; i < count; i++) {
+                    const lightness = 15 + Math.random() * 75;
                     colors.push(createColor(0, 0, lightness));
-                } else {
-                    const hue = i % 2 === 0 ? base.h : (base.h + 180) % 360;
-                    const lightness = base.l + (i % 2) * 10 - 5;
-                    colors.push(createColor(hue, base.s, lightness));
+                }
+            } else {
+                // Complémentaire très flexible (140°-220° au lieu de 180° fixe)
+                const complementaryShift = 140 + Math.random() * 80;
+                
+                for(let i = 0; i < count; i++) {
+                    const hue = i % 2 === 0 ? 
+                        (base.h + Math.random() * 40 - 20) % 360 : 
+                        (base.h + complementaryShift + Math.random() * 40 - 20) % 360;
+                    
+                    // Varier fortement saturation et luminosité
+                    const sat = 20 + Math.random() * 70; // 20-90%
+                    const light = 25 + Math.random() * 60; // 25-85%
+                    colors.push(createColor(hue, sat, light));
                 }
             }
             break;
 
         case 'triade':
-            for(let i = 0; i < count; i++) {
-                if (isAchromatic) {
-                    const lightness = 20 + (i * (70 / (count - 1)));
+            if (isAchromatic) {
+                for(let i = 0; i < count; i++) {
+                    const lightness = 15 + Math.random() * 75;
                     colors.push(createColor(0, 0, lightness));
-                } else {
-                    const hue = (base.h + (i % 3) * 120) % 360;
-                    const lightness = base.l + Math.floor(i / 3) * 10;
-                    colors.push(createColor(hue, base.s, lightness));
+                }
+            } else {
+                // Triade flexible (100°-140° au lieu de 120° fixe)
+                const triadeShift = 100 + Math.random() * 40;
+                
+                for(let i = 0; i < count; i++) {
+                    const hue = (base.h + (i % 3) * triadeShift + Math.random() * 30 - 15) % 360;
+                    const sat = 20 + Math.random() * 70;
+                    const light = 25 + Math.random() * 60;
+                    colors.push(createColor(hue, sat, light));
                 }
             }
             break;
 
         case 'tétrade':
-            for(let i = 0; i < count; i++) {
-                if (isAchromatic) {
-                    const lightness = 20 + (i * (70 / (count - 1)));
+            if (isAchromatic) {
+                for(let i = 0; i < count; i++) {
+                    const lightness = 15 + Math.random() * 75;
                     colors.push(createColor(0, 0, lightness));
-                } else {
-                    const hue = (base.h + (i % 4) * 90) % 360;
-                    const lightness = base.l + Math.floor(i / 4) * 10;
-                    colors.push(createColor(hue, base.s, lightness));
+                }
+            } else {
+                // Tétrade flexible (75°-105° au lieu de 90° fixe)
+                const tetradeShift = 75 + Math.random() * 30;
+                
+                for(let i = 0; i < count; i++) {
+                    const hue = (base.h + (i % 4) * tetradeShift + Math.random() * 25 - 12.5) % 360;
+                    const sat = 20 + Math.random() * 70;
+                    const light = 25 + Math.random() * 60;
+                    colors.push(createColor(hue, sat, light));
                 }
             }
             break;
 
         case 'pentade':
-            for(let i = 0; i < count; i++) {
-                if (isAchromatic) {
-                    const lightness = 20 + (i * (70 / (count - 1)));
+            if (isAchromatic) {
+                for(let i = 0; i < count; i++) {
+                    const lightness = 15 + Math.random() * 75;
                     colors.push(createColor(0, 0, lightness));
-                } else {
-                    const hue = (base.h + (i % 5) * 72) % 360;
-                    const lightness = base.l + Math.floor(i / 5) * 10;
-                    colors.push(createColor(hue, base.s, lightness));
+                }
+            } else {
+                // Pentade flexible (60°-84° au lieu de 72° fixe)
+                const pentadeShift = 60 + Math.random() * 24;
+                
+                for(let i = 0; i < count; i++) {
+                    const hue = (base.h + (i % 5) * pentadeShift + Math.random() * 25 - 12.5) % 360;
+                    const sat = 20 + Math.random() * 70;
+                    const light = 25 + Math.random() * 60;
+                    colors.push(createColor(hue, sat, light));
                 }
             }
             break;
 
         case 'hexade':
-            for(let i = 0; i < count; i++) {
-                if (isAchromatic) {
-                    const lightness = 20 + (i * (70 / (count - 1)));
+            if (isAchromatic) {
+                for(let i = 0; i < count; i++) {
+                    const lightness = 15 + Math.random() * 75;
                     colors.push(createColor(0, 0, lightness));
-                } else {
-                    const hue = (base.h + (i % 6) * 60) % 360;
-                    const lightness = base.l + Math.floor(i / 6) * 10;
-                    colors.push(createColor(hue, base.s, lightness));
+                }
+            } else {
+                // Hexade flexible (50°-70° au lieu de 60° fixe)
+                const hexadeShift = 50 + Math.random() * 20;
+                
+                for(let i = 0; i < count; i++) {
+                    const hue = (base.h + (i % 6) * hexadeShift + Math.random() * 25 - 12.5) % 360;
+                    const sat = 20 + Math.random() * 70;
+                    const light = 25 + Math.random() * 60;
+                    colors.push(createColor(hue, sat, light));
                 }
             }
             break;
@@ -969,20 +1171,54 @@ function generateColors() {
         case 'unique':
             if (isAchromatic) {
                 for(let i = 0; i < count; i++) {
-                    const lightness = 20 + (i * (70 / (count - 1)));
+                    const lightness = 15 + Math.random() * 75;
                     colors.push(createColor(0, 0, lightness));
                 }
             } else {
-                const step = 360 / count;
+                // Harmonie TOTALEMENT libre - comme Coolors
+                const offset = Math.random() * 360; // Départ aléatoire sur le cercle
+                
                 for(let i = 0; i < count; i++) {
-                    const hue = (base.h + i * step) % 360;
-                    colors.push(createColor(hue, base.s, base.l));
+                    // Espacement complètement aléatoire
+                    const hue = (base.h + offset + Math.random() * 360) % 360;
+                    
+                    // Créer intentionnellement des contrastes
+                    // 30% de chances d'avoir une couleur très saturée
+                    // 30% de chances d'avoir une couleur désaturée
+                    // 40% entre les deux
+                    let sat;
+                    const satRandom = Math.random();
+                    if (satRandom < 0.3) {
+                        sat = 70 + Math.random() * 30; // Très saturé (70-100%)
+                    } else if (satRandom < 0.6) {
+                        sat = 15 + Math.random() * 25; // Désaturé (15-40%)
+                    } else {
+                        sat = 40 + Math.random() * 30; // Moyen (40-70%)
+                    }
+                    
+                    // Même logique pour la luminosité
+                    let light;
+                    const lightRandom = Math.random();
+                    if (lightRandom < 0.3) {
+                        light = 15 + Math.random() * 25; // Foncé (15-40%)
+                    } else if (lightRandom < 0.6) {
+                        light = 65 + Math.random() * 25; // Clair (65-90%)
+                    } else {
+                        light = 40 + Math.random() * 25; // Moyen (40-65%)
+                    }
+                    
+                    colors.push(createColor(hue, sat, light));
                 }
             }
-            break;
+            break
     }
 
-    return colors.map(c => applyMood(c));
+return colors.map((c, i) => applyMood(c, i)).sort((a, b) => {
+    if (Math.abs(a.h - b.h) < 30) {
+        return a.l - b.l;
+    }
+    return a.h - b.h;
+});
 }
 
         function createColor(h, s, l) {
@@ -997,7 +1233,7 @@ function generateColors() {
             return { h, s, l, hex, rgb, name };
         }
 
-       function applyMood(color) {
+function applyMood(color, index) {
     let { h, s, l } = color;
 
     // Ne pas modifier les couleurs achromatiques
@@ -1005,31 +1241,46 @@ function generateColors() {
         return color;
     }
 
-    switch(config.mood) {
+    // Déterminer quel mood appliquer
+    let moodToApply = config.mood;
+    
+    // Si 2 moods sélectionnés, alterner
+    if (config.moodCount === 2 && config.mood2) {
+        // Alterner : pair = mood1, impair = mood2
+        moodToApply = index % 2 === 0 ? config.mood : config.mood2;
+    }
+
+    switch(moodToApply) {
         case 'vibrant':
-            s = Math.min(100, s + 20);
-            l = Math.max(45, Math.min(60, l));
-            break;
-        case 'doux':
-            s = Math.max(30, s - 25);
-            l = Math.max(60, Math.min(75, l));
-            break;
-        case 'terreux':
-            s = Math.max(25, s - 20);
-            l = Math.max(35, Math.min(55, l));
-            break;
-        case 'profond':
-            s = Math.min(80, s + 10);
-            l = Math.max(25, Math.min(45, l));
-            break;
-        case 'lumineux':
-            s = Math.max(50, s);
-            l = Math.max(70, Math.min(85, l));
-            break;
-        case 'neutre':
-            s = Math.max(20, Math.min(50, s));
+            s = Math.min(100, s + 15);
             l = Math.max(40, Math.min(70, l));
             break;
+        case 'pastel':
+            s = Math.max(20, Math.min(45, s - 30));
+            l = Math.max(70, Math.min(90, l + 20));
+            break;
+        case 'terreux':
+            s = Math.max(20, s - 15);
+            l = Math.max(30, Math.min(60, l));
+            break;
+        case 'profond':
+            s = Math.min(85, s + 5);
+            l = Math.max(20, Math.min(50, l));
+            break;
+        case 'lumineux':
+            s = Math.max(40, s);
+            l = Math.max(65, Math.min(90, l));
+            break;
+        case 'neon':
+            s = Math.min(100, s + 40);
+            l = Math.max(50, Math.min(75, l + 10));
+            break;
+        case 'vintage':
+            s = Math.max(25, Math.min(50, s - 20));
+            l = Math.max(40, Math.min(65, l));
+            break;
+        case 'neutre':
+            return color;
     }
 
     return createColor(h, s, l);
@@ -1057,55 +1308,56 @@ function generateColors() {
             return `${f(0)}, ${f(8)}, ${f(4)}`;
         }
 
-        function getColorName(h, s, l) {
-            const hueRanges = [
-                { range: [0, 15], names: ['Bordeaux', 'Rouge cerise', 'Vermillon', 'Carmin', 'Rubis', 'Grenat', 'Sang de bœuf', 'Rouge feu'] },
-                { range: [15, 35], names: ['Terre de Sienne', 'Ocre', 'Fauve', 'Caramel', 'Cognac', 'Rouille', 'Brique', 'Cuivre'] },
-                { range: [35, 50], names: ['Or', 'Miel', 'Safran', 'Ambre', 'Topaze', 'Blé doré', 'Jaune impérial'] },
-                { range: [50, 70], names: ['Citron', 'Soufre', 'Canari', 'Mimosa', 'Vanille', 'Paille', 'Jaune vif'] },
-                { range: [70, 100], names: ['Chartreuse', 'Lime', 'Anis', 'Pistache', 'Olive', 'Vert tendre', 'Vert prairie'] },
-                { range: [100, 140], names: ['Émeraude', 'Jade', 'Malachite', 'Vert menthe', 'Vert sapin', 'Vert forêt', 'Turquoise foncée'] },
-                { range: [140, 170], names: ['Turquoise', 'Cyan', 'Aigue-marine', 'Bleu-vert', 'Vert d\'eau', 'Lagon', 'Céladon'] },
-                { range: [170, 200], names: ['Bleu ciel', 'Azur', 'Bleu givré', 'Bleu glacier', 'Bleu pastel', 'Bleu poudré'] },
-                { range: [200, 230], names: ['Bleu roi', 'Bleu outremer', 'Lapis lazuli', 'Bleu électrique', 'Saphir', 'Cobalt', 'Bleu profond'] },
-                { range: [230, 260], names: ['Bleu nuit', 'Bleu marine', 'Bleu prussien', 'Indigo', 'Bleu minuit', 'Bleu acier'] },
-                { range: [260, 280], names: ['Pourpre', 'Violet impérial', 'Améthyste', 'Iris', 'Mauve', 'Lilas', 'Parme'] },
-                { range: [280, 310], names: ['Violet profond', 'Prune', 'Aubergine', 'Orchidée', 'Magenta foncé', 'Byzantin'] },
-                { range: [310, 330], names: ['Fuchsia', 'Magenta', 'Rose vif', 'Pivoine', 'Rose fluo', 'Rose électrique'] },
-                { range: [330, 345], names: ['Rose bonbon', 'Rose dragée', 'Cerise', 'Framboise', 'Rose framboise', 'Rose corail'] },
-                { range: [345, 360], names: ['Rose pâle', 'Saumon', 'Corail', 'Pêche', 'Rose incarnat', 'Amarante'] }
-            ];
+function getColorName(h, s, l) {
+    // Tester les couleurs achromatiques EN PREMIER
+    if (s < 15) {
+        if (l < 30) return 'Anthracite';
+        if (l < 50) return 'Gris ardoise';
+        if (l < 70) return 'Gris perle';
+        return 'Gris clair';
+    }
 
-            let selectedRange = hueRanges.find(r => h >= r.range[0] && h < r.range[1]);
-            if (!selectedRange && h >= 345) {
-                selectedRange = hueRanges[0];
-            }
+    const hueRanges = [
+        { range: [0, 15], names: ['Bordeaux', 'Rouge cerise', 'Vermillon', 'Carmin', 'Rubis', 'Grenat', 'Sang de bœuf', 'Rouge feu'] },
+        { range: [15, 35], names: ['Terre de Sienne', 'Ocre', 'Fauve', 'Caramel', 'Cognac', 'Rouille', 'Brique', 'Cuivre'] },
+        { range: [35, 50], names: ['Or', 'Miel', 'Safran', 'Ambre', 'Topaze', 'Blé doré', 'Jaune impérial'] },
+        { range: [50, 70], names: ['Citron', 'Soufre', 'Canari', 'Mimosa', 'Vanille', 'Paille', 'Jaune vif'] },
+        { range: [70, 100], names: ['Chartreuse', 'Lime', 'Anis', 'Pistache', 'Olive', 'Vert tendre', 'Vert prairie'] },
+        { range: [100, 140], names: ['Émeraude', 'Jade', 'Malachite', 'Vert menthe', 'Vert sapin', 'Vert forêt', 'Turquoise foncée'] },
+        { range: [140, 170], names: ['Turquoise', 'Cyan', 'Aigue-marine', 'Bleu-vert', 'Vert d\'eau', 'Lagon', 'Céladon'] },
+        { range: [170, 200], names: ['Bleu ciel', 'Azur', 'Bleu givré', 'Bleu glacier', 'Bleu pastel', 'Bleu poudré'] },
+        { range: [200, 230], names: ['Bleu roi', 'Bleu outremer', 'Lapis lazuli', 'Bleu électrique', 'Saphir', 'Cobalt', 'Bleu profond'] },
+        { range: [230, 260], names: ['Bleu nuit', 'Bleu marine', 'Bleu prussien', 'Indigo', 'Bleu minuit', 'Bleu acier'] },
+        { range: [260, 280], names: ['Pourpre', 'Violet impérial', 'Améthyste', 'Iris', 'Mauve', 'Lilas', 'Parme'] },
+        { range: [280, 310], names: ['Violet profond', 'Prune', 'Aubergine', 'Orchidée', 'Magenta foncé', 'Byzantin'] },
+        { range: [310, 330], names: ['Fuchsia', 'Magenta', 'Rose vif', 'Pivoine', 'Rose fluo', 'Rose électrique'] },
+        { range: [330, 345], names: ['Rose bonbon', 'Rose dragée', 'Cerise', 'Framboise', 'Rose framboise', 'Rose corail'] },
+        { range: [345, 360], names: ['Rose pâle', 'Saumon', 'Corail', 'Pêche', 'Rose incarnat', 'Amarante'] }
+    ];
 
-            if (!selectedRange) return 'Couleur unique';
+    let selectedRange = hueRanges.find(r => h >= r.range[0] && h < r.range[1]);
+    if (!selectedRange && h >= 345) {
+        selectedRange = hueRanges[0];
+    }
 
-            let names = selectedRange.names;
-            let index = Math.floor(Math.random() * names.length);
-            let baseName = names[index];
+    if (!selectedRange) return 'Couleur unique';
 
-            if (s < 15) {
-                if (l < 30) return 'Anthracite';
-                if (l < 50) return 'Gris ardoise';
-                if (l < 70) return 'Gris perle';
-                return 'Gris clair';
-            }
+    let names = selectedRange.names;
+    let index = Math.floor(Math.random() * names.length);
+    let baseName = names[index];
 
-            if (l < 20) {
-                return 'Noir ' + baseName.toLowerCase();
-            } else if (l < 35) {
-                return baseName + ' sombre';
-            } else if (l > 80) {
-                return baseName + ' pâle';
-            } else if (l > 70) {
-                return baseName + ' clair';
-            }
+    if (l < 20) {
+        return 'Noir ' + baseName.toLowerCase();
+    } else if (l < 35) {
+        return baseName + ' sombre';
+    } else if (l > 80) {
+        return baseName + ' pâle';
+    } else if (l > 70) {
+        return baseName + ' clair';
+    }
 
-            return baseName;
-        }
+    return baseName;
+}
 
         function getContrastColor(hex) {
             const r = parseInt(hex.substr(1, 2), 16);
@@ -1115,43 +1367,70 @@ function generateColors() {
             return luminance > 0.5 ? '#000000' : '#FFFFFF';
         }
 
-        function updateQuickPanel() {
-            document.getElementById('baseColorSelect').value = config.baseColor === 'custom' ? 'bleu' : config.baseColor;
-            document.getElementById('colorCountSelect').value = config.colorCount;
-            document.getElementById('paletteTypeSelect').value = config.paletteType;
-            document.getElementById('moodSelect').value = config.mood;
-        }
+function updateQuickPanel() {
+    if (config.baseColor === 'custom' && config.customColor) {
+        document.getElementById('baseColorSelect').value = 'personnalisée';
+        document.getElementById('customColorPicker').value = hslToHex(config.customColor.h, config.customColor.s, config.customColor.l);
+        document.getElementById('customColorPicker').style.display = 'block';
+    } else {
+        document.getElementById('baseColorSelect').value = config.baseColor;
+        document.getElementById('customColorPicker').style.display = 'none';
+    }
+    document.getElementById('colorCountSelect').value = config.colorCount;
+    document.getElementById('paletteTypeSelect').value = config.paletteType;
+    document.getElementById('moodSelect').value = config.mood;
+    document.getElementById('moodSelect2').value = config.mood2 || ''; // ← Ajoutez cette ligne
+}
 
-        // Gestion du menu
-        document.getElementById('menuBtn').addEventListener('click', () => {
-            const panel = document.getElementById('quickPanel');
-            panel.classList.toggle('active');
-        });
+// Gestion du menu
+document.getElementById('menuBtn').addEventListener('click', () => {
+    const panel = document.getElementById('quickPanel');
+    panel.classList.toggle('active');
+    
+    // Mettre à jour les valeurs du panneau
+    updateQuickPanel();
+});
 
-        document.getElementById('applyQuick').addEventListener('click', () => {
-            const newBaseColor = document.getElementById('baseColorSelect').value;
-            
-            if (newBaseColor === 'aléatoire') {
-                const colors = Object.keys(baseColors);
-                config.baseColor = colors[Math.floor(Math.random() * colors.length)];
-                config.customColor = null;
-            } else {
-                config.baseColor = newBaseColor;
-                config.customColor = null;
-            }
-            
-            config.colorCount = parseInt(document.getElementById('colorCountSelect').value);
-            config.paletteType = document.getElementById('paletteTypeSelect').value;
-            config.mood = document.getElementById('moodSelect').value;
-            
-            generatePalette();
-            document.getElementById('quickPanel').classList.remove('active');
-            
-            // Reset
-            isFlipped = false;
-            document.getElementById('shadeRange').value = 0;
-            document.getElementById('shadeSlider').classList.remove('active');
-        });
+document.getElementById('applyQuick').addEventListener('click', () => {
+    const newBaseColor = document.getElementById('baseColorSelect').value;
+    
+    if (newBaseColor === 'aléatoire') {
+        const colors = Object.keys(baseColors);
+        config.baseColor = colors[Math.floor(Math.random() * colors.length)];
+        config.customColor = null;
+    } else if (newBaseColor === 'personnalisée') {
+        const color = document.getElementById('customColorPicker').value;
+        config.customColor = hexToHSL(color);
+        config.baseColor = 'custom';
+    } else {
+        config.baseColor = newBaseColor;
+        config.customColor = null;
+    }
+    
+    config.colorCount = parseInt(document.getElementById('colorCountSelect').value);
+    config.paletteType = document.getElementById('paletteTypeSelect').value;
+    config.mood = document.getElementById('moodSelect').value;
+    config.mood2 = document.getElementById('moodSelect2').value || '';
+    config.moodCount = config.mood2 ? 2 : 1;
+    
+    generatePalette();
+    document.getElementById('quickPanel').classList.remove('active');
+    
+    isFlipped = false;
+    document.getElementById('shadeRange').value = 0;
+    document.getElementById('shadeSlider').classList.remove('active');
+});
+		
+// Gestion du color picker dans le panneau rapide - juste afficher/masquer
+document.getElementById('baseColorSelect').addEventListener('change', (e) => {
+    const customPicker = document.getElementById('customColorPicker');
+    if (e.target.value === 'personnalisée') {
+        customPicker.style.display = 'block';
+    } else {
+        customPicker.style.display = 'none';
+    }
+});
+
 
         document.getElementById('homeBtn').addEventListener('click', () => {
             config = {
@@ -1194,6 +1473,25 @@ function generateColors() {
                 quickPanel.classList.remove('active');
             }
         });
+		
+		// Gestion de la barre espace pour générer une nouvelle palette
+document.addEventListener('keydown', (e) => {
+    // Vérifier si on est sur l'écran de palette et que la barre espace est pressée
+    if (e.code === 'Space' && document.getElementById('paletteScreen').classList.contains('active')) {
+        // Empêcher le scroll de la page
+        e.preventDefault();
+        
+        // Ne pas régénérer si un panneau est ouvert ou si on est en mode nuances
+        const quickPanelOpen = document.getElementById('quickPanel').classList.contains('active');
+        const colorPickerOpen = document.getElementById('colorPickerOverlay').classList.contains('active');
+        
+        if (!quickPanelOpen && !colorPickerOpen && !isFlipped) {
+            // Régénérer la palette
+            generatePalette();
+        }
+    }
+});
+		
     </script>
 </body>
 </html>
