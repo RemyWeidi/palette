@@ -501,6 +501,100 @@
         .color-picker-buttons .cancel-color:hover {
             background: #7f8c8d;
         }
+		
+		@media (max-width: 768px) {
+    .screen {
+        padding: 20px;
+        max-width: 100%;
+    }
+    
+    h1 {
+        font-size: 1.8em;
+        margin-bottom: 30px;
+    }
+    
+    .color-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+    }
+    
+    .color-option {
+        padding: 40px 10px;
+        font-size: 1em;
+    }
+    
+    .option-grid {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .number-selector {
+        gap: 10px;
+        margin: 20px 0;
+    }
+    
+    .number-btn, .mood-count-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.1em;
+    }
+    
+    .quick-panel {
+        right: 10px;
+        top: 70px;
+        width: calc(100% - 20px);
+        max-width: 300px;
+    }
+    
+    .color-name {
+        font-size: 1em;
+        padding: 8px 15px;
+    }
+    
+    .color-info {
+        padding: 15px;
+    }
+    
+    .shade-slider {
+        width: calc(100% - 40px);
+        padding: 10px 15px;
+    }
+    
+    .shade-slider input {
+        width: 150px;
+    }
+    
+    .next-btn, .prev-btn {
+        padding: 15px 40px;
+        font-size: 1.1em;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 1.5em;
+    }
+    
+    .color-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .number-btn, .mood-count-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 1em;
+    }
+    
+    .shade-slider {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .shade-slider input {
+        width: 200px;
+    }
+}
+		
     </style>
 </head>
 <body>
@@ -986,8 +1080,8 @@ function toggleAllShades() {
     isFlipped = !isFlipped;
     
     if (isFlipped) {
-        // Générer une nuance aléatoire limitée à ±25%
-        const shadeValue = Math.floor(Math.random() * 51) - 25; // -25 à +25
+        // Nuance fixe : +30% de luminosité (plus clair)
+        const shadeValue = 30;
         document.getElementById('shadeRange').value = shadeValue;
         
         bars.forEach((bar, i) => {
@@ -1007,21 +1101,22 @@ function toggleAllShades() {
     }
 }
 
-        function updateSingleShade(bar, index, shadeValue) {
-            const color = currentColors[index];
-            let { h, s, l } = color;
-            
-            // Ajuster la luminosité selon le slider
-            l = Math.max(5, Math.min(95, l + shadeValue));
-            
-            const shadedColor = createColor(h, s, l);
-            const shadeFace = bar.querySelector('.shade-face');
-            shadeFace.style.background = shadedColor.hex;
-            
-            const shadeName = shadeFace.querySelector('.color-name');
-            shadeName.textContent = shadedColor.name;
-            shadeName.style.color = getContrastColor(shadedColor.hex);
-        }
+function updateSingleShade(bar, index, shadeValue) {
+    const color = currentColors[index];
+    let { h, s, l } = color;
+    
+    // Ajuster la luminosité selon le slider avec un seuil minimum de 10%
+    l = l + shadeValue;
+    l = Math.max(10, Math.min(95, l)); // Seuil minimum à 10% au lieu de 5%
+    
+    const shadedColor = createColor(h, s, l);
+    const shadeFace = bar.querySelector('.shade-face');
+    shadeFace.style.background = shadedColor.hex;
+    
+    const shadeName = shadeFace.querySelector('.color-name');
+    shadeName.textContent = shadedColor.name;
+    shadeName.style.color = getContrastColor(shadedColor.hex);
+}
 
 function generateColors() {
     const base = config.customColor || baseColors[config.baseColor];
@@ -1309,6 +1404,9 @@ function applyMood(color, index) {
         }
 
 function getColorName(h, s, l) {
+    // Normaliser h pour qu'il soit toujours entre 0 et 360
+    h = ((h % 360) + 360) % 360;
+    
     // Tester les couleurs achromatiques EN PREMIER
     if (s < 15) {
         if (l < 30) return 'Anthracite';
@@ -1336,11 +1434,16 @@ function getColorName(h, s, l) {
     ];
 
     let selectedRange = hueRanges.find(r => h >= r.range[0] && h < r.range[1]);
+    
+    // Si h est entre 345 et 360, utiliser la première plage (rouge)
     if (!selectedRange && h >= 345) {
         selectedRange = hueRanges[0];
     }
-
-    if (!selectedRange) return 'Couleur unique';
+    
+    // Si toujours rien, forcer dans la plage la plus proche
+    if (!selectedRange) {
+        selectedRange = hueRanges[Math.floor(h / 24) % hueRanges.length];
+    }
 
     let names = selectedRange.names;
     let index = Math.floor(Math.random() * names.length);
